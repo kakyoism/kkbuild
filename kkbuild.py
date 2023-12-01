@@ -365,7 +365,7 @@ def create_microsoft_icon(master, name=None):
     out_dir = osp.dirname(master)
     if not name:
         name = util.extract_path_stem(master)
-    sizes = ['16', '24', '32', '48', '64', '96', '128', '256', '512']
+    sizes = ['16', '32', '48', '64', '96', '128', '256']
     util.run_cmd(['magick', 'convert', master, '-define', f'icon:auto-resize={",".join(sizes)}', out := osp.abspath(f'{out_dir}/{name}.ico')])
     return out
 

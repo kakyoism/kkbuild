@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "kkbuild"
-version = "0.3.0"
+version = "0.3.1"
 description = "Building blocks for creating various build pipelines"
 authors = ["Beinan Li <li.beinan@gmail.com>"]
 maintainers = ["Beinan Li <li.beinan@gmail.com>"]
@@ -12,9 +12,6 @@ documentation = "https://github.com/kakyoism/kkbuild/README.md"
 keywords = [
     "utility",
     "devops",
-]
-packages = [
-    { include = "kkbuild", from = ".." },
 ]
 exclude = [
     ".idea",

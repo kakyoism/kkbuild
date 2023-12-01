@@ -1,3 +1,11 @@
+# project
+test/_gen
+test/skip_slow_tests.cfg.txt
+# JetBrains
+.idea/workspace.xml
+.idea/kkpyutil.iml
+.idea/misc.xml
+.idea/inspectionProfiles
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -20,6 +28,7 @@ parts/
 sdist/
 var/
 wheels/
+pip-wheel-metadata/
 share/python-wheels/
 *.egg-info/
 .installed.cfg

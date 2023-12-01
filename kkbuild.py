@@ -81,7 +81,7 @@ def build_iconset(master, iconset):
     for sz in sizes:
         comps = sz.split('@')
         sz = comps[0]
-        actual_size = str(2*int(sz)) if (has_sep := len(comps) > 1) else sz
+        actual_size = str(2 * int(sz)) if (has_sep := len(comps) > 1) else sz
         suffix = f'{sz}x{sz}@2x' if has_sep else f'{sz}x{sz}'
         util.run_cmd(['sips', '-z', actual_size, actual_size, master, '--out', osp.abspath(f'{iconset_dir}/icon_{suffix}.png')])
     util.copy_file(master, osp.abspath(f'{iconset_dir}/icon_512x512@2x.png'))
@@ -98,6 +98,7 @@ def fix_dylib_dependencies(target, rootprefix='@executable_path'):
     - replace build-time prefix with user-supplied string for all dependencies
     - replace dylib's own id with user-provided prefix
     """
+
     class DynLinked:
         """
         a pre-deployed binary file having dependencies to fix for runtime execution
@@ -223,6 +224,7 @@ Application (fixable) :
             cbin = DynLinked(child, prefix=prefix, parent=parent)
             _collect_deps_tree(cbin, io_allbins, prefix)
         return True
+
     util.validate_platform('Darwin')
     if not osp.isfile(target):
         raise FileNotFoundError(f'Missing target: {target}')
@@ -333,3 +335,44 @@ def build_xcodeproj(proj, scheme, config='Debug', sdk='macosx'):
 def clean_xcodeproj(proj, scheme, config='Debug', sdk='macosx'):
     cmd = ['xcodebuild', '-project', proj, '-scheme', scheme, '-sdk', sdk, '-configuration', config, 'clean']
     util.run_cmd(cmd)
+
+
+def create_apple_icon(master, name=None):
+    """
+    - generate .icns under the same folder as master
+    """
+    out_dir = osp.dirname(master)
+    if not name:
+        name = util.extract_path_stem(master)
+    iconset_dir = osp.join(out_dir, f'{name}.iconset')
+    os.makedirs(iconset_dir, exist_ok=True)
+    sizes = ['16', '32', '128', '256', '512']
+    for sz in sizes:
+        util.run_cmd(['sips', '-z', sz, sz, master, '--out', osp.abspath(f'{iconset_dir}/icon_{sz}x{sz}.png')])
+        if sz == '512':
+            util.copy_file(master, osp.abspath(f'{iconset_dir}/icon_{sz}x{sz}@2x.png'))
+            continue
+        util.run_cmd(['sips', '-z', str(int(sz)*2), str(int(sz)*2), master, '--out', osp.abspath(f'{iconset_dir}/icon_{sz}x{sz}@2x.png')])
+    util.run_cmd(['iconutil', '-c', 'icns', iconset_dir, '-o', out := osp.abspath(f'{out_dir}/{name}.icns')])
+    shutil.rmtree(iconset_dir, ignore_errors=True)
+    return out
+
+
+def create_microsoft_icon(master, name=None):
+    """
+    - must install imagemagic: choco install imagemagick
+    """
+    out_dir = osp.dirname(master)
+    if not name:
+        name = util.extract_path_stem(master)
+    sizes = ['16', '24', '32', '48', '64', '96', '128', '256', '512']
+    util.run_cmd(['magick', 'convert', master, '-define', f'icon:auto-resize={",".join(sizes)}', out := osp.abspath(f'{out_dir}/{name}.ico')])
+    return out
+
+
+def _test():
+    pass
+
+
+if __name__ == '__main__':
+    _test()

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "kkbuild"
-version = "0.1.0"
+version = "0.3.0"
 description = "Building blocks for creating various build pipelines"
 authors = ["Beinan Li <li.beinan@gmail.com>"]
 maintainers = ["Beinan Li <li.beinan@gmail.com>"]
